@@ -76,9 +76,9 @@ class TangoBot:
     # Direction makes more sense for steering
     # we might need to flip these
     def steer(self, direction: Direction, power: float):
-        if direction == Direction.FORWARD:
+        if direction == Direction.LEFT:
             target = 6000 + int(power * 3000)
-        elif direction == Direction.BACKWARD:
+        elif direction == Direction.RIGHT:
             target = 6000 - int(power * 3000)
         else:
             raise Exception('Direction Exception')
