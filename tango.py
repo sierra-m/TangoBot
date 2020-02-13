@@ -84,7 +84,7 @@ class TangoBot:
         else:
             raise Exception('Direction Exception')
 
-        self.controller.set_target(servoports.DRIVE, SERVO_CENTER)
+        # self.controller.set_target(servoports.DRIVE, SERVO_CENTER)
         self.controller.set_target(servoports.STEER, target)
 
     # Normalized from -1 to 1
