@@ -1,4 +1,4 @@
-import Maestro
+import maestro
 import servoports
 from enums import Direction
 import util
@@ -8,24 +8,27 @@ from config import *
 
 class TangoBot:
     def __init__(self):
-        self.controller = Maestro.Controller()
-        self.controller.setAccel(servoports.DRIVE, MOTOR_ACCEL)
-        self.controller.setAccel(servoports.STEER, STEER_ACCEL)
+        self.controller = maestro.Controller()
+        self.controller.set_accel(servoports.DRIVE, MOTOR_ACCEL)
+        self.controller.set_accel(servoports.STEER, STEER_ACCEL)
 
-        self.controller.setAccel(servoports.HEAD_SWIVEL, HEAD_ACCEL)
-        self.controller.setAccel(servoports.HEAD_TILT, HEAD_ACCEL)
-        self.controller.setAccel(servoports.WAIST, WAIST_ACCEL)
+        self.controller.set_accel(servoports.HEAD_SWIVEL, HEAD_ACCEL)
+        self.controller.set_accel(servoports.HEAD_TILT, HEAD_ACCEL)
+        self.controller.set_accel(servoports.WAIST, WAIST_ACCEL)
 
-        self.controller.setAccel(servoports.RIGHT_SHOULDER, ARM_ACCEL)
-        self.controller.setAccel(servoports.RIGHT_FLAP, ARM_ACCEL)
-        self.controller.setAccel(servoports.RIGHT_ELBOW, ARM_ACCEL)
-        self.controller.setAccel(servoports.RIGHT_WRIST, ARM_ACCEL)
-        self.controller.setAccel(servoports.RIGHT_TWIST, ARM_ACCEL)
-        self.controller.setAccel(servoports.RIGHT_GRIP, ARM_ACCEL)
+        self.controller.set_accel(servoports.RIGHT_SHOULDER, ARM_ACCEL)
+        self.controller.set_accel(servoports.RIGHT_FLAP, ARM_ACCEL)
+        self.controller.set_accel(servoports.RIGHT_ELBOW, ARM_ACCEL)
+        self.controller.set_accel(servoports.RIGHT_WRIST, ARM_ACCEL)
+        self.controller.set_accel(servoports.RIGHT_TWIST, ARM_ACCEL)
+        self.controller.set_accel(servoports.RIGHT_GRIP, ARM_ACCEL)
+
+    def __del__(self):
+        self.controller.close()
 
     def set(self, channel, position):
         target = self.get_target(position)
-        self.controller.setTarget(channel, target)
+        self.controller.set_target(channel, target)
 
     # Normalized input power
     def drive(self, direction: Direction, power: int):
@@ -36,7 +39,7 @@ class TangoBot:
         else:
             raise Exception('Direction Exception')
 
-        self.controller.setTarget(servoports.DRIVE, target)
+        self.controller.set_target(servoports.DRIVE, target)
 
     def steer(self, direction: Direction, power: int):
         # not sure yet
