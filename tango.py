@@ -133,7 +133,7 @@ class TangoBot:
 
     @staticmethod
     def get_target(position: float):
-        return util.scale(position, -1, 1, SERVO_MIN, SERVO_MAX)
+        return int(util.scale(position, -1, 1, SERVO_MIN, SERVO_MAX))
 
     @staticmethod
     def bind_normalized(position: float):
