@@ -132,14 +132,11 @@ class KeyboardControl:
         self.bot.tilt_head(self.head_tilt)
 
     def waist_turn_event(self, event):
-        print('{} pressed'.format(event.char))
         if event.char == 'a':
             self.waist_turn = 0.5
         elif event.char == 's':
-            self.head_tilt = 0
+            self.waist_turn = 0
         elif event.char == 'd':
-            self.head_tilt = -0.5
-
-        print('waist turn: {}'.format(self.waist_turn))
+            self.waist_turn = -0.5
 
         self.bot.turn_waist(self.waist_turn)
