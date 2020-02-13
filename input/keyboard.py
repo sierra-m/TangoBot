@@ -24,8 +24,8 @@ SOFTWARE.
 
 
 import tkinter
-from ..tango import TangoBot
-from ..util.enums import Direction
+from tango import TangoBot
+from util.enums import Direction
 
 
 class KeyboardControl:
