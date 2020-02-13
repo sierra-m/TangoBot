@@ -74,9 +74,9 @@ class KeyboardControl:
         self.bot.drive(self.velocity)
 
     def steer_event(self, event):
-        if event.keysym == 'Up':
+        if event.keysym == 'Left':
             self.rotational += 0.5
-        elif event.keysym == 'Down':
+        elif event.keysym == 'Right':
             self.rotational -= 0.5
 
         if self.rotational > 0.5:

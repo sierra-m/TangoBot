@@ -72,6 +72,7 @@ class TangoBot:
     # Let's be real this is more useful than directions
     def drive(self, velocity: float):
         velocity = -velocity
+        self.controller.set_target(servoports.STEER, SERVO_CENTER)
         self._set(servoports.DRIVE, velocity)
 
     # Direction makes more sense for steering
@@ -84,9 +85,7 @@ class TangoBot:
         else:
             raise Exception('Direction Exception')
 
-        print('Steering to the {}'.format(direction))
-
-        # self.controller.set_target(servoports.DRIVE, SERVO_CENTER)
+        self.controller.set_target(servoports.DRIVE, SERVO_CENTER)
         self.controller.set_target(servoports.STEER, target)
 
     # Normalized from -1 to 1
