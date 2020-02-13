@@ -28,11 +28,12 @@ class TangoBot:
         self.controller.close()
 
     def set(self, channel, position):
+        position = self.bind_normalized(position)
         target = self.get_target(position)
         self.controller.set_target(channel, target)
 
     # Normalized input power
-    def drive(self, direction: Direction, power: int):
+    def drive_direction(self, direction: Direction, power: int):
         if direction == Direction.FORWARD:
             target = 6000 + power * 3000
         elif direction == Direction.BACKWARD:
@@ -41,6 +42,11 @@ class TangoBot:
             raise Exception('Direction Exception')
 
         self.controller.set_target(servoports.DRIVE, target)
+
+    # Normalized from -1 to 1
+    # Let's be real this is more useful than directions
+    def drive(self, velocity: float):
+        self.set(servoports.DRIVE, velocity)
 
     def steer(self, direction: Direction, power: int):
         # not sure yet
@@ -95,3 +101,12 @@ class TangoBot:
     @staticmethod
     def get_target(position: float):
         return util.scale(position, -1, 1, SERVO_MIN, SERVO_MAX)
+
+    @staticmethod
+    def bind_normalized(position: float):
+        if position < -1:
+            position = -1
+        elif position > 1:
+            position = 1
+
+        return position
