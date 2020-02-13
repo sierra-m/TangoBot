@@ -84,6 +84,8 @@ class TangoBot:
         else:
             raise Exception('Direction Exception')
 
+        print('Steering to the {}'.format(direction))
+
         # self.controller.set_target(servoports.DRIVE, SERVO_CENTER)
         self.controller.set_target(servoports.STEER, target)
 
