@@ -1,7 +1,6 @@
 import maestro
-import servoports
-from enums import Direction
-import util
+from util.enums import Direction
+from util import util, servoports
 
 from config import *
 
