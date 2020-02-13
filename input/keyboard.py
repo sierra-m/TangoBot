@@ -45,7 +45,7 @@ class KeyboardControl:
         self.root.bind('<Left>', self.steer_event)
         self.root.bind('<Right>', self.steer_event)
 
-        self.root.bind('<Space>', self.stop_event)
+        self.root.bind('<space>', self.stop_event)
 
         self.root.bind('q', self.head_swivel_event)
         self.root.bind('e', self.head_swivel_event)
