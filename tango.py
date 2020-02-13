@@ -8,8 +8,10 @@ from config import *
 class TangoBot:
     def __init__(self):
         self.controller = maestro.Controller()
-        self.controller.set_accel(servoports.DRIVE, MOTOR_ACCEL)
-        self.controller.set_accel(servoports.STEER, STEER_ACCEL)
+
+        # Motor accel is servo speed as motor speed is servo target
+        self.controller.set_speed(servoports.DRIVE, MOTOR_ACCEL)
+        self.controller.set_speed(servoports.STEER, STEER_ACCEL)
 
         self.controller.set_accel(servoports.HEAD_SWIVEL, HEAD_ACCEL)
         self.controller.set_accel(servoports.HEAD_TILT, HEAD_ACCEL)
@@ -45,51 +47,51 @@ class TangoBot:
         pass
 
     # Normalized from -1 to 1
-    def turn_waist(self, position: int):
+    def turn_waist(self, position: float):
         self.set(servoports.WAIST, position)
 
-    def swivel_head(self, position: int):
+    def swivel_head(self, position: float):
         self.set(servoports.HEAD_SWIVEL, position)
 
-    def tilt_head(self, position: int):
+    def tilt_head(self, position: float):
         self.set(servoports.HEAD_TILT, position)
 
-    def turn_right_shoulder(self, position: int):
+    def turn_right_shoulder(self, position: float):
         self.set(servoports.RIGHT_SHOULDER, position)
 
-    def turn_right_flap(self, position: int):
+    def turn_right_flap(self, position: float):
         self.set(servoports.RIGHT_FLAP, position)
 
-    def bend_right_elbow(self, position: int):
+    def bend_right_elbow(self, position: float):
         self.set(servoports.RIGHT_ELBOW, position)
 
-    def bend_right_wrist(self, position: int):
+    def bend_right_wrist(self, position: float):
         self.set(servoports.RIGHT_WRIST, position)
 
-    def twist_right_wrist(self, position: int):
+    def twist_right_wrist(self, position: float):
         self.set(servoports.RIGHT_TWIST, position)
 
-    def grip_right(self, position: int):
+    def grip_right(self, position: float):
         self.set(servoports.RIGHT_GRIP, position)
 
-    def turn_left_shoulder(self, position: int):
+    def turn_left_shoulder(self, position: float):
         self.set(servoports.LEFT_SHOULDER, position)
 
-    def turn_left_flap(self, position: int):
+    def turn_left_flap(self, position: float):
         self.set(servoports.LEFT_FLAP, position)
 
-    def bend_left_elbow(self, position: int):
+    def bend_left_elbow(self, position: float):
         self.set(servoports.LEFT_ELBOW, position)
 
-    def bend_left_wrist(self, position: int):
+    def bend_left_wrist(self, position: float):
         self.set(servoports.LEFT_WRIST, position)
 
-    def twist_left_wrist(self, position: int):
+    def twist_left_wrist(self, position: float):
         self.set(servoports.LEFT_TWIST, position)
 
-    def grip_left(self, position: int):
+    def grip_left(self, position: float):
         self.set(servoports.LEFT_GRIP, position)
 
     @staticmethod
-    def get_target(position: int):
+    def get_target(position: float):
         return util.scale(position, -1, 1, SERVO_MIN, SERVO_MAX)
