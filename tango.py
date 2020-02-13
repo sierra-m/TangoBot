@@ -58,7 +58,7 @@ class TangoBot:
         self.controller.set_target(channel, target)
 
     # Normalized input power
-    def drive_direction(self, direction: Direction, power: int):
+    def drive_direction(self, direction: Direction, power: float):
         if direction == Direction.FORWARD:
             target = 6000 + power * 3000
         elif direction == Direction.BACKWARD:
@@ -73,9 +73,17 @@ class TangoBot:
     def drive(self, velocity: float):
         self._set(servoports.DRIVE, velocity)
 
-    def steer(self, direction: Direction, power: int):
-        # not sure yet
-        pass
+    # Direction makes more sense for steering
+    # we might need to flip these
+    def steer(self, direction: Direction, power: float):
+        if direction == Direction.FORWARD:
+            target = 6000 + int(power * 3000)
+        elif direction == Direction.BACKWARD:
+            target = 6000 - int(power * 3000)
+        else:
+            raise Exception('Direction Exception')
+
+        self.controller.set_target(servoports.STEER, target)
 
     # Normalized from -1 to 1
     def turn_waist(self, position: float):
