@@ -77,8 +77,8 @@ class Controller:
         return self.maxes[chan]
         
     # Set channel to a specified target value.  Servo will begin moving based
-    # on Speed and Acceleration parameters previously set.
-    # Target values will be constrained within Min and Max range, if set.
+    # on Speed and Acceleration parameters previously _set.
+    # Target values will be constrained within Min and Max range, if _set.
     # For servos, target represents the pulse width in of quarter-microseconds
     # Servo center is at 1500 microseconds, or 6000 quarter-microseconds
     # Typically valid servo range is 3000 to 9000 quarter-microseconds
@@ -123,7 +123,7 @@ class Controller:
     # The result is returned in a measure of quarter-microseconds, which mirrors
     # the Target parameter of set_target.
     # This is not reading the true servo position, but the last target position sent
-    # to the servo. If the Speed is set to below the top speed of the servo, then
+    # to the servo. If the Speed is _set to below the top speed of the servo, then
     # the position result will align well with the actual servo position, assuming
     # it is not stalled or slowed.
     def get_position(self, chan):
@@ -133,8 +133,8 @@ class Controller:
         msb = ord(self.usb.read())
         return (msb << 8) + lsb
 
-    # Test to see if a servo has reached the set target position.  This only provides
-    # useful results if the Speed parameter is set slower than the maximum speed of
+    # Test to see if a servo has reached the _set target position.  This only provides
+    # useful results if the Speed parameter is _set slower than the maximum speed of
     # the servo.  Servo range must be defined first using set_range. See set_range comment.
     #
     # ***Note if target position goes outside of Maestro's allowable range for the
@@ -147,7 +147,7 @@ class Controller:
         return False
     
     # Have all servo outputs reached their targets? This is useful only if Speed and/or
-    # Acceleration have been set on one or more of the channels. Returns True or False.
+    # Acceleration have been _set on one or more of the channels. Returns True or False.
     # Not available with Micro Maestro.
     def get_moving_state(self):
         cmd = chr(0x13)
