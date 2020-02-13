@@ -62,14 +62,14 @@ class KeyboardControl:
     # Seven speeds total
     def drive_event(self, event):
         if event.keysym == 'Up':
-            self.velocity += 0.2
+            self.velocity += 0.3
         elif event.keysym == 'Down':
-            self.velocity -= 0.2
+            self.velocity -= 0.3
 
-        if self.velocity > 0.6:
-            self.velocity = 0.6
-        elif self.velocity < -0.6:
-            self.velocity = -0.6
+        if self.velocity > 0.9:
+            self.velocity = 0.9
+        elif self.velocity < -0.9:
+            self.velocity = -0.9
 
         self.bot.drive(self.velocity)
 
@@ -139,5 +139,7 @@ class KeyboardControl:
             self.head_tilt = 0
         elif event.char == 'd':
             self.head_tilt = -0.5
+
+        print('waist turn: {}'.format(self.waist_turn))
 
         self.bot.turn_waist(self.waist_turn)
