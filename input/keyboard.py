@@ -84,7 +84,7 @@ class KeyboardControl:
         elif self.rotational < -0.5:
             self.rotational = -0.5
 
-        direction = Direction.RIGHT if self.rotational > 1 else Direction.LEFT
+        direction = Direction.RIGHT if self.rotational > 0 else Direction.LEFT
 
         self.bot.steer(direction, abs(self.rotational))
 
