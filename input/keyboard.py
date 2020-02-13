@@ -25,6 +25,7 @@ SOFTWARE.
 
 import tkinter
 from ..tango import TangoBot
+from ..util.enums import Direction
 
 
 class KeyboardControl:
@@ -56,6 +57,8 @@ class KeyboardControl:
         self.root.bind('s', self.waist_turn_event)
         self.root.bind('d', self.waist_turn_event)
 
+        self.root.bind('p', self.reset_event)
+
     # Seven speeds total
     def drive_event(self, event):
         if event.keysym == 'Up':
@@ -71,11 +74,35 @@ class KeyboardControl:
         self.bot.drive(self.velocity)
 
     def steer_event(self, event):
-        pass
+        if event.keysym == 'Up':
+            self.rotational += 0.5
+        elif event.keysym == 'Down':
+            self.rotational -= 0.5
+
+        if self.rotational > 0.5:
+            self.rotational = 0.5
+        elif self.rotational < -0.5:
+            self.rotational = -0.5
+
+        direction = Direction.RIGHT if self.rotational > 1 else Direction.LEFT
+
+        self.bot.steer(direction, abs(self.rotational))
 
     def stop_event(self, event):
         self.velocity = 0
+        self.rotational = 0
         self.bot.drive(self.velocity)
+        self.bot.steer(Direction.LEFT, 0)
+
+    def reset_event(self, event):
+        self.head_swivel = 0
+        self.head_tilt = 0
+        self.waist_turn = 0
+
+        self.bot.swivel_head(self.head_swivel)
+        self.bot.tilt_head(self.head_tilt)
+        self.bot.turn_waist(self.waist_turn)
+        self.stop_event(event)
 
     # Five degrees of freedom
     def head_swivel_event(self, event):
@@ -92,7 +119,24 @@ class KeyboardControl:
         self.bot.swivel_head(self.head_swivel)
 
     def head_tilt_event(self, event):
-        pass
+        if event.char == 'r':
+            self.head_tilt += 0.5
+        elif event.char == 'f':
+            self.head_tilt -= 0.5
+
+        if self.head_tilt > 1:
+            self.head_tilt = 1
+        elif self.head_tilt < -1:
+            self.head_tilt = -1
+
+        self.bot.tilt_head(self.head_tilt)
 
     def waist_turn_event(self, event):
-        pass
+        if event.char == 'a':
+            self.waist_turn = 0.5
+        elif event.char == 's':
+            self.head_tilt = 0
+        elif event.char == 'd':
+            self.head_tilt = -0.5
+
+        self.bot.turn_waist(self.waist_turn)
