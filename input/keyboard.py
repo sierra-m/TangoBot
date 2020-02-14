@@ -26,12 +26,15 @@ SOFTWARE.
 import tkinter
 from tango import TangoBot
 from util.enums import Direction
+from util.scheduler import Scheduler
 
 
 class KeyboardControl:
     def __init__(self, window: tkinter.Tk):
         self.root = window
         self.bot = TangoBot()
+        self.failsafe_timer = Scheduler(7, self.stop_event)
+        self.root.after(200, self.update_timer)
 
         self.velocity = 0  # driving
         self.rotational = 0  # steering
@@ -59,6 +62,10 @@ class KeyboardControl:
 
         self.root.bind('p', self.reset_event)
 
+    def update_timer(self):
+        self.failsafe_timer.update()
+        self.root.after(200, self.update_timer)
+
     # Seven speeds total
     def drive_event(self, event):
         if event.keysym == 'Up':
@@ -71,6 +78,7 @@ class KeyboardControl:
         elif self.velocity < -0.9:
             self.velocity = -0.9
 
+        self.failsafe_timer.reset()
         self.bot.drive(self.velocity)
 
     def steer_event(self, event):
@@ -86,6 +94,7 @@ class KeyboardControl:
 
         direction = Direction.RIGHT if self.rotational > 0 else Direction.LEFT
 
+        self.failsafe_timer.reset()
         self.bot.steer(direction, abs(self.rotational))
 
     def stop_event(self, event):
