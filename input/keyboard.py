@@ -33,7 +33,7 @@ class KeyboardControl:
     def __init__(self, window: tkinter.Tk):
         self.root = window
         self.bot = TangoBot()
-        self.failsafe_timer = Scheduler(7, self.stop_event)
+        self.failsafe_timer = Scheduler(7, lambda: self.stop_event(None))
         self.root.after(200, self.update_timer)
 
         self.velocity = 0  # driving
