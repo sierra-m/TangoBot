@@ -47,6 +47,7 @@ class NetworkControl:
         self.root.bind('w', self.message_two)
 
         self.thread = threading.Thread(target=self.start)
+        self.thread.start()
 
     def __del__(self):
         self.sock.close()
