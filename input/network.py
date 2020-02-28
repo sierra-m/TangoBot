@@ -101,9 +101,9 @@ class NetworkControl:
         self.bot.steer(Direction.LEFT, 0)
 
     def steer(self, cmd):
-        if cmd == 'SL':
+        if cmd == 'SR':
             self.rotational += 0.5
-        elif cmd == 'SR':
+        elif cmd == 'SL':
             self.rotational -= 0.5
 
         if self.rotational > 0.5:
