@@ -1,0 +1,125 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:layout_width = "match_parent"
+    android:layout_height = "match_parent"
+    android:layout_margin = "16dp"
+    tools:context = ".ServerActivity">
+    <TextView
+        android:id = "@+id/tvIP"
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content"
+        android:textAppearance = "@style/Base.TextAppearance.AppCompat.Medium" />
+    <TextView
+        android:id = "@+id/tvPort"
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content"
+        android:layout_below = "@+id/tvIP"
+        android:textAppearance = "@style/Base.TextAppearance.AppCompat.Medium" />
+    <TextView
+        android:id = "@+id/tvConnectionStatus"
+        android:layout_width = "match_parent"
+        android:layout_height = "wrap_content"
+        android:layout_below = "@+id/tvPort"
+        android:textAppearance = "@style/Base.TextAppearance.AppCompat.Medium" />
+    <TextView
+        android:id = "@+id/tvMessages"
+        android:layout_width = "match_parent"
+        android:layout_height = "wrap_content"
+        android:layout_above = "@+id/ForwardButton"
+        android:layout_below = "@+id/tvConnectionStatus"
+        android:inputType = "textMultiLine"
+        android:textAppearance = "@style/Base.TextAppearance.AppCompat.Medium" />
+
+    <Button
+        android:id="@+id/ForwardButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="553dp"
+        android:text="@string/DriveForward" />
+
+    <Button
+        android:id="@+id/StopButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="510dp"
+        android:text="@string/DriveStop" />
+
+    <Button
+        android:id="@+id/BackwardButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="467dp"
+        android:text="@string/DriveBackward" />
+
+    <Button
+        android:id="@+id/TurnRightButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="377dp"
+        android:text="@string/TurnRight" />
+
+    <Button
+        android:id="@+id/TurnLeftButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="422dp"
+        android:text="@string/TurnLeft" />
+
+    <Button
+        android:id="@+id/HeadUpButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="295dp"
+        android:text="@string/HeadUp" />
+
+    <Button
+        android:id="@+id/HeadDownButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="253dp"
+        android:text="@string/HeadDown" />
+
+    <Button
+        android:id="@+id/HeadLeftButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="210dp"
+        android:text="@string/HeadLeft" />
+
+    <Button
+        android:id="@+id/HeadRightButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="166dp"
+        android:text="@string/HeadRight" />
+
+    <Button
+        android:id="@+id/WaistLeftButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="48dp"
+        android:text="@string/WaistLeft" />
+
+    <Button
+        android:id="@+id/WaistRightButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="2dp"
+        android:text="@string/WaistRight" />
+</RelativeLayout>

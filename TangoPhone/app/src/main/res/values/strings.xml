@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">TangoPhone</string>
+    <string name="TalkButton">Talk</string>
+    <string name="KillMe">Kill Me Now</string>
+    <string name="SpeakButton">Speak</string>
+    <string name="ConnectToTangoBot">Connect To Tango</string>
+    <string name="HeadUp">Head Up</string>
+    <string name="HeadDown">Head Down</string>
+    <string name="HeadLeft">Head Left</string>
+    <string name="HeadRight">Head Right</string>
+    <string name="DriveForward">Forward</string>
+    <string name="DriveBackward">Backward</string>
+    <string name="TurnLeft">Turn Left</string>
+    <string name="TurnRight">Turn Right</string>
+    <string name="DriveStop">Stop</string>
+    <string name="WaistRight">Waist Right</string>
+    <string name="WaistLeft">Waist Left</string>
+</resources>
