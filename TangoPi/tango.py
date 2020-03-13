@@ -88,7 +88,6 @@ class TangoBot:
 
     # Direction makes more sense for steering
     # we might need to flip these
-    @command('ST', servoports.STEER)
     def steer(self, direction: Direction, power: float):
         if direction == Direction.LEFT:
             target = 6000 + int(power * 1900)
@@ -99,6 +98,11 @@ class TangoBot:
 
         self.controller.set_target(servoports.DRIVE, SERVO_CENTER)
         self.controller.set_target(servoports.STEER, target)
+        
+    @command('ST', servoports.STEER)
+    def steer_direct(self, velocity: float):
+        self.controller.set_target(servoports.DRIVE, SERVO_CENTER)
+        self._set(servoports.STEER, velocity)
 
     # Normalized from -1 to 1
     @command('WT', servoports.WAIST)
