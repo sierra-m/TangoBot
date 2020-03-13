@@ -55,7 +55,7 @@ class Instructions extends Component {
   increaseValue = (item) => {
     let incBy = 100;
     if (item.type === 'DR' || item.type === 'STL' || item.type === 'STR' || item.type === 'WT') {
-      incBy = 1000;
+      incBy = 250;
     } else if (item.type === 'HT' || item.type === 'HS') {
       incBy = 500;
     }
@@ -90,7 +90,7 @@ class Instructions extends Component {
   decreaseValue = (item) => {
     let decBy = 100;
     if (item.type === 'DR' || item.type === 'STL' || item.type === 'STR' || item.type === 'WT') {
-      decBy = 1000;
+      decBy = 250;
     } else if (item.type === 'HT' || item.type === 'HS') {
       decBy = 500;
     }
