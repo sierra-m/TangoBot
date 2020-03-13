@@ -35,6 +35,7 @@ class NetworkControl:
 
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.bind((host, port))
+        self.sock.listen(5)
 
         self.thread = threading.Thread(target=self.start)
         self.thread.start()
