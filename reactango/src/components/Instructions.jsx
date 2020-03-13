@@ -84,6 +84,7 @@ class Instructions extends Component {
       }
     }
     console.log(out);
+    fetch(`/run?instructions=${out}`);
   };
 
   decreaseValue = (item) => {
