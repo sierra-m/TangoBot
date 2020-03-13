@@ -13,9 +13,9 @@ import "./styles.css";
 
 
 const COLLECTION = [
-  { id: uuid(), label: "Drive", instruction: "DR{{dir}}500DEL{{delay}}FS100", value: 1000, min: -10000, max: 10000, type: 'DR' },
-  { id: uuid(), label: "Turn Left", instruction: "ST{{dir}}300DEL{{delay}}FS100", value: 1000, min: 0, max: 5000, type: 'STL' },
-  { id: uuid(), label: "Turn Right", instruction: "ST{{dir}}300DEL{{delay}}FS100", value: 1000, min: 0, max: 5000, type: 'STR' },
+  { id: uuid(), label: "Drive", instruction: "DR{{dir}}500DEL{{delay}}DR1", value: 1000, min: -10000, max: 10000, type: 'DR' },
+  { id: uuid(), label: "Turn Left", instruction: "ST{{dir}}300DEL{{delay}}DR1", value: 1000, min: 0, max: 5000, type: 'STL' },
+  { id: uuid(), label: "Turn Right", instruction: "ST{{dir}}300DEL{{delay}}DR1", value: 1000, min: 0, max: 5000, type: 'STR' },
   { id: uuid(), label: "Waist Turn", instruction: "WT{{dir}}", value: 0, min: -1000, max: 1000, type: 'WT' },
   { id: uuid(), label: "Head Tilt", instruction: "HT{{dir}}", value: 0, min: -1000, max: 1000, type: 'HT' },
   { id: uuid(), label: "Head Swivel", instruction: "HS{{dir}}", value: 0, min: -1000, max: 1000, type: 'HS' }

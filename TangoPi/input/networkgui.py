@@ -55,6 +55,7 @@ class NetworkControl:
 
                     print(command)
                     self.bot.execute(command)
+                    self.bot.stop(100)
 
         except KeyboardInterrupt:
             print('Exiting network control')

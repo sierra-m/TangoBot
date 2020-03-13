@@ -222,6 +222,7 @@ class TangoBot:
             # Delay can also be normalized as `sleep` takes secs, not ms
             # Convenient coincidence.
             time.sleep(value)
+            self.stop(100)
         else:
             method = self.commands[cmd]
             if speed:
