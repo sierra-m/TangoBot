@@ -52,6 +52,9 @@ class TangoBot:
         self.controller.set_accel(servoports.RIGHT_WRIST, ARM_ACCEL)
         self.controller.set_accel(servoports.RIGHT_TWIST, ARM_ACCEL)
         self.controller.set_accel(servoports.RIGHT_GRIP, ARM_ACCEL)
+        
+        self.controller.set_target(servoports.DRIVE, SERVO_CENTER)
+        self.controller.set_target(servoports.STEER, SERVO_CENTER)
 
         self.init_channels(17)
 
