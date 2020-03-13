@@ -70,6 +70,12 @@ class TangoBot:
         target = self.get_target(position)
         self.controller.set_target(channel, target)
 
+    # dummy stop command
+    @command('FS', 0)
+    def stop(self, vel):
+        self.controller.set_target(servoports.DRIVE, SERVO_CENTER)
+        self.controller.set_target(servoports.STEER, SERVO_CENTER)
+
     # Normalized input power
     def drive_direction(self, direction: Direction, power: float):
         if direction == Direction.FORWARD:
