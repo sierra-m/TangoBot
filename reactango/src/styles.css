@@ -1,0 +1,39 @@
+.App {
+    font-family: sans-serif;
+    text-align: center;
+}
+
+ul,
+li {
+    margin: 0;
+    list-style: none;
+    display: flex;
+    padding: 8px;
+    overflow: auto;
+}
+
+.react-beautiful-dnd-copy ~ li {
+    transform: none !important;
+}
+
+.dragging {
+    background: yellow;
+}
+
+.react-beautiful-dnd-copy {
+    background: lightblue;
+}
+
+.react-beautiful-dnd-copy ~ [data-rbd-placeholder-context-id] {
+    display: none !important;
+}
+
+.shop {
+    padding: 10px;
+    border: 1px solid #aaa;
+}
+
+.shopping-bag {
+    padding: 10px;
+    border: 1px dashed #777;
+}
