@@ -27,7 +27,7 @@ def command(name, channel):
     """Command decorator to associate command and channel with appropriate method"""
     def wrapper(func):
         def inner(*args, **kwargs):
-            func(*args[1:], **kwargs)  # Cut out extra self
+            func(*args, **kwargs)  # Cut out extra self
 
         # Attach attributes to executable
         inner.__command__ = name
