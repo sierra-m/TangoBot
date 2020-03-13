@@ -34,7 +34,7 @@ class NetworkControl:
         self.bot = TangoBot()
 
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.connect((host, port))
+        self.sock.bind((host, port))
 
         self.thread = threading.Thread(target=self.start)
         self.thread.start()
@@ -45,8 +45,9 @@ class NetworkControl:
     def start(self):
         try:
             print('Entering network control')
+            client, address = self.sock.accept()
             while True:
-                command = self.sock.recv(1024)
+                command = client.recv(1024)
 
                 if command:
                     command = command.decode()
