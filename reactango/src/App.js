@@ -82,7 +82,7 @@ function App() {
       <Container>
         <DragDropContext onDragEnd={onDragEnd}>
           <Row className="align-items-center mt-4">
-            <Col xs={2}>
+            <Col xs={3}>
               <Toolbar items={COLLECTION} />
               <Trash/>
             </Col>
