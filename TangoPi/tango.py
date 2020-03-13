@@ -56,7 +56,7 @@ class TangoBot:
         self.controller.set_target(servoports.DRIVE, SERVO_CENTER)
         self.controller.set_target(servoports.STEER, SERVO_CENTER)
 
-        self.init_channels(17)
+        # self.init_channels(17)
 
     def init_channels(self, limit):
         for channel in range(limit + 1):
