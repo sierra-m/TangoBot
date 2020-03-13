@@ -70,9 +70,7 @@ class TangoBot:
         target = self.get_target(position)
         self.controller.set_target(channel, target)
 
-    # dummy stop command
-    @command('FS', 0)
-    def stop(self, vel):
+    def stop(self):
         self.controller.set_target(servoports.DRIVE, SERVO_CENTER)
         self.controller.set_target(servoports.STEER, SERVO_CENTER)
 
@@ -218,11 +216,10 @@ class TangoBot:
                 optional speed parameter
         """
 
-        if cmd == 'DLY':
+        if cmd == 'DEL':
             # Delay can also be normalized as `sleep` takes secs, not ms
             # Convenient coincidence.
             time.sleep(value)
-            self.stop(100)
         else:
             method = self.commands[cmd]
             if speed:
