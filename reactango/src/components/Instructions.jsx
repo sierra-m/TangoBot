@@ -74,10 +74,10 @@ class Instructions extends Component {
           out += item.instruction.replace('{{dir}}', dir).replace('{{delay}}', Math.abs(item.value).toString());
           break;
         case 'STL':
-          out += item.instruction.replace('{{dir}}', '-').replace('{{delay}}', Math.abs(item.value).toString());
+          out += item.instruction.replace('{{dir}}', '').replace('{{delay}}', Math.abs(item.value).toString());
           break;
         case 'STR':
-          out += item.instruction.replace('{{dir}}', '').replace('{{delay}}', Math.abs(item.value).toString());
+          out += item.instruction.replace('{{dir}}', '-').replace('{{delay}}', Math.abs(item.value).toString());
           break;
         default:
           out += item.instruction.replace('{{dir}}', item.value.toString())
