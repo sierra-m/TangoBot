@@ -65,6 +65,7 @@ class DialogNode:
         self.proposal = kwargs.get('proposal', False)
         self.level = kwargs.get('level', None)
         self.scope = []  # type:List[DialogNode]
+        self.parent = None
 
         self.triggers = [t.lower() for t in self.triggers]
 
