@@ -70,7 +70,7 @@ class DialogNode:
 
     def triggers_on(self, phrase: str, concepts: ConceptLibrary):
         for node in self.scope:  # type:DialogNode
-            if phrase in node.triggers:
+            if phrase.lower() in node.triggers:
                 return node
 
     def render_triggers(self, concepts: ConceptLibrary):
@@ -88,3 +88,6 @@ class DialogNode:
                 possible.append(trigger)
 
         self.triggers = possible
+
+    def add_node(self, node):
+        self.scope.append(node)
