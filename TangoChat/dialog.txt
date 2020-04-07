@@ -1,7 +1,7 @@
 #Comment ignore this line
-#&p : Have you seen a dog around?
-#	u1:(yes) : A black dog
-#	u1: (no) : Thanks anyway
+&p : Have you seen a dog around?
+	u1:(yes) : A black dog
+	u1: (no) : Thanks anyway
 ~greetings: [hello howdy "hi there"] # how generic
 ~reponses: [no "of course" "I don't have a nose"]
 u:(boo) : ~greetings

@@ -13,8 +13,8 @@ with open(sys.argv[1], 'r') as f:
     text = f.read()
 
 parser = Parser(text)
-parser.print_tree()
-parser.print_concepts()
+# parser.print_tree()
+# parser.print_concepts()
 
 print('Beginning chat. Type "exit" to leave.')
 
