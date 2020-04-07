@@ -1,7 +1,9 @@
 import re
 from core import Concept, ConceptLibrary, Response, DialogNode
 
-rule_pattern = re.compile(r'\s*u\s*(?P<num>[0-9]+)?\s*:\s*\((?P<input>[\[\]a-z0-9\s\"\'~?!.,\-]+)\)\s*?:\s*(?P<pred>[\[\]a-z0-9\s\"\'~?!.,\-]+)\s*$', re.I)
+rule_pattern = re.compile(
+    r'\s*u\s*(?P<num>[0-9]+)?\s*:\s*\((?P<input>[\[\]a-z0-9\s\"\'~?!.,\-]+)\)\s*?:\s*(?P<pred>[\[\]a-z0-9\s\"\'~?!.,\-]+)\s*$',
+    re.I)
 
 proposal_pattern = re.compile(r'\s*&\s*p\s*:\s*(?P<pred>[\[\]a-z0-9\s\"\'~?!.,\-]+)\s*$', re.I)
 
@@ -9,7 +11,7 @@ concept_pattern = re.compile(r'\s*~\s*(?P<name>[a-z0-9]+)\s*:\s*(?P<pred>[\[\]a-
 
 token_pattern = re.compile(r'("[^"]+"|[^\s"]+)')
 
-list_pattern = re.compile(r'\s*\[\s*([\[\]a-z0-9\s\"\'~?!.,\-]+)\s*\]\s*')
+list_pattern = re.compile(r'\s*\[\s*([\[\]a-z0-9\s\"\'~?!.,\-]+)\s*\]\s*', re.I)
 
 single_token_pattern = re.compile(r'\s*([\w\"\'~?!.,\-]+)\s*$', re.I)
 
@@ -30,7 +32,6 @@ class Parser:
         # root can be null except for scope
         self.root = DialogNode(level=-1)
         current_node = self.root
-        parent_node = None
 
         self.concept_lib = ConceptLibrary()
 
@@ -65,7 +66,7 @@ class Parser:
                 if level > current_node.level:
                     if (level - current_node.level) > 1:
                         self.error(
-                            "Can't add level u{} before u{}".format(level or '', current_node.level+1 or ''),
+                            "Can't add level u{} before u{}".format(level or '', current_node.level + 1 or ''),
                             segment,
                             line)
                     else:
@@ -74,7 +75,7 @@ class Parser:
                         current_node = new_node
                 else:
                     # Traverse up tree till node with scope level is found or root
-                    while current_node.level > level and current_node.level > -1:
+                    while current_node.level >= level and current_node.level > -1:
                         current_node = current_node.parent
 
                     current_node.add_node(new_node)
@@ -102,7 +103,7 @@ class Parser:
 
                         # Build new proposal
                         new_proposal = match.groupdict()
-                        options = self.get_options(new_proposal['predicate'])
+                        options = self.get_options(new_proposal['pred'])
 
                         response = Response(options)
                         new_node = DialogNode(response=response, level=0, proposal=True)
@@ -115,20 +116,61 @@ class Parser:
                     else:
                         self.error('Unrecognized pattern', segment, line)
 
-            print(match.groupdict())
+        self.render_triggers()
+
+    def print_tree(self):
+        self._print_node(self.root)
+
+    def _print_node(self, node, indent: str = ''):
+        responses = []
+        if node.response:
+            responses = node.response.choices
+
+        print('{}Level {}: {} in scope | Triggers: {} | Responses: {}'.format(indent,
+                                                                              node.level,
+                                                                              len(node.scope),
+                                                                              node.triggers,
+                                                                              responses))
+
+        for child in node.scope:
+            self._print_node(child, indent + '  ')
+
+    def print_concepts(self):
+        for concept in self.concept_lib.concepts:
+            print('Concept:[name="{}" options="{}"]'.format(concept.name, concept.options))
+
+    def render_triggers(self):
+        self._render_node(self.root)
+
+    def _render_node(self, node):
+        if node.triggers:
+            node.render_triggers(self.concept_lib)
+
+        for child in node.scope:
+            self._render_node(child)
+
+    def get_trigger_match(self, phrase: str, node: DialogNode):
+        found = None
+
+        if node != self.root:
+            found = node.triggers_on(phrase, self.concept_lib)
+
+        if not found:
+            found = self.root.triggers_on(phrase, self.concept_lib)
+
+        return found
 
     @staticmethod
     def error(text: str, segment: str, line: int):
         segment = ' '.join(segment.split())  # Remove surrounding whitespace
-        print('Parser Error (line {}): {} at "{}"'.format(line, text, segment))
+        print('Parser Error (line {}): {} at "{}"'.format(line + 1, text, segment))
         exit(1)
 
     @staticmethod
     def get_options(text):
         match = re.match(list_pattern, text)
         if match:
-            return re.findall(token_pattern, match.group(1))
+            # Return tokens without quotes
+            return [x.replace('"', '') for x in re.findall(token_pattern, match.group(1))]
         else:
             return [' '.join(text.split())]
-
-
