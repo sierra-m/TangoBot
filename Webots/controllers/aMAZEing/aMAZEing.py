@@ -4,6 +4,8 @@ import math
 from itertools import repeat
 import sys
 import time
+import json
+from os import path
 
 
 # Enums for direction
@@ -18,13 +20,9 @@ class Direction(Enum):
 
 # Enums for main loop movement state
 class State(Enum):
-    ORIENT = 0
-    DECIDE = 1
-    SEARCH = 2
-    ALIGN = 3
-    ENTER = 4
-    TURNING = 5
-    FINISH = 6
+    DECIDE = 0
+    SEARCH = 1
+    FINISH = 2
 
 
 # Angles corresponding to directions
@@ -56,7 +54,7 @@ TIME_STEP = 64
 # Variance of proximity output
 PS_VARIANCE = 10
 
-MAX_SPEED = 3.28
+MAX_SPEED = 5
 HALF_SPEED = MAX_SPEED / 2
 FORWARD_SPEED = 0.8 * MAX_SPEED
 CREEP_SPEED = 0.1 * MAX_SPEED
@@ -66,7 +64,7 @@ TRIM_INC = 0.007 * MAX_SPEED
 PS_FRONT_STOP = 110
 PS_RIGHT_STOP = 60
 
-PS_MIN = 80
+PS_MIN = 77
 
 PS_TRIM_MIN = 130
 PS_TRIM_MAX = 150
@@ -76,17 +74,88 @@ PS_TRIM_INC = 0.025
 
 COMPASS_TRIM_INC = 0.025
 
-DIST_ALIGN = 1.8
-DIST_ENTER = 3
+DIST_ALIGN = 1.5
+DIST_ENTER = 3.5
 DIST_REVERSE = 0.7
 DIST_WALL_ALIGN = 0.3
 
 LED_BLINK_TIME = 0.2
+LOGGER_TIMEOUT = 2
 
 TWO_PI = 2 * math.pi
 
 # Samples to window for average
 WINDOW_SIZE = 5
+
+
+use_file = path.exists('data.json')
+
+if not use_file:
+    with open('data.json', 'w') as f:
+        structure = {
+            'run': 1,
+            'best_path': []
+        }
+        json.dump(structure, f)
+
+        run = 1
+        last_best_path = []
+else:
+    with open('data.json', 'r') as f:
+        data = json.load(f)
+        run = data['run']
+        last_best_path = data['best_path']
+
+
+class PathLogger:
+    def __init__(self, log=[]):
+        self.log = log
+
+        self.dir_to_char = {
+            Direction.NORTH: 'N',
+            Direction.EAST: 'E',
+            Direction.SOUTH: 'S',
+            Direction.WEST: 'W'
+        }
+
+        self.char_to_dir = {v: k for k, v in self.dir_to_char.items()}
+
+        self.dir_contras = {
+            Direction.NORTH: Direction.SOUTH,
+            Direction.SOUTH: Direction.NORTH,
+            Direction.EAST: Direction.WEST,
+            Direction.WEST: Direction.EAST
+        }
+
+        self.timer_start = time.time()
+
+    def load(self, data: str):
+        self.log = [self.char_to_dir[x] for x in data]
+
+    def add(self, direction: Direction):
+        if self.log:
+            if (time.time() - self.timer_start) < LOGGER_TIMEOUT:
+                print('Rejected logging: timeout')
+                return
+
+            last = self.log[-1]
+            print('Wants to log {}, last logged is {}'.format(direction, last))
+            if self.dir_contras[last] == direction:
+                self.log.pop()
+                print('popped')
+            else:
+                self.log.append(direction)
+                print('added')
+            print(self.log)
+            self.timer_start = time.time()
+        else:
+            self.log.append(direction)
+
+    def chars(self):
+        return [self.dir_to_char[x] for x in self.log]
+
+    def __iter__(self):
+        return iter(self.log)
 
 
 class SuperRoomba:
@@ -153,6 +222,12 @@ class SuperRoomba:
 
         # Current movement state
         self.state = None
+
+        self.best_path = None
+        self.path_logger = PathLogger()
+        if use_file and run == 3:
+            self.path_logger.load(last_best_path)
+            self.best_path = iter(self.path_logger)
 
         # Load initial samples in each sensor window
         self.ps_windows = []
@@ -289,6 +364,7 @@ class SuperRoomba:
         print('Aligning with intersection...')
         self.move_distance_blocking(DIST_ALIGN)
         print('Aligned.')
+        self.ps_refresh()
 
     def enter_passage(self):
         self.full_forward()
@@ -298,10 +374,13 @@ class SuperRoomba:
         self.ps_refresh()
 
     def turn_around(self):
-        angle_mid = dir_angles[Direction((self.facing.value - 1) % 4)]
-        self.turn_towards_blocking(angle_mid)
-        self.full_forward()
-        self.move_distance_blocking(DIST_WALL_ALIGN)
+        print('Turning around')
+        self.blink_reverse(LED_BLINK_TIME)
+
+        # angle_mid = dir_angles[Direction((self.facing.value - 1) % 4)]
+        # self.turn_towards_blocking(angle_mid)
+        # self.full_forward()
+        # self.move_distance_blocking(DIST_WALL_ALIGN)
         self.facing = Direction((self.facing.value - 2) % 4)
         self.turn_towards_blocking(dir_angles[self.facing])
 
@@ -341,6 +420,22 @@ class SuperRoomba:
         self.async_delay(delay)
         self.clear_led_range(3, 6)
 
+    def turn_right(self):
+        print('Turning right')
+        self.blink_right(LED_BLINK_TIME)
+        self.facing = Direction((self.facing.value + 1) % 4)
+        self.turn_towards_blocking(dir_angles[self.facing])
+
+        self.enter_passage()
+
+    def turn_left(self):
+        print('Turning left')
+        self.blink_left(LED_BLINK_TIME)
+        self.facing = Direction((self.facing.value - 1) % 4)
+        self.turn_towards_blocking(dir_angles[self.facing])
+
+        self.enter_passage()
+
     def setup(self):
         # Turn for first decision
         self.facing = Direction.NORTH
@@ -370,31 +465,65 @@ class SuperRoomba:
                 self.stop_motors()
                 # print(ps_values)
 
-                # Give priority to right
-                if ps_values[PS_R] < PS_MIN:
-                    print('Turning right')
-                    self.blink_right(LED_BLINK_TIME)
-                    self.facing = Direction((self.facing.value + 1) % 4)
-                    self.turn_towards_blocking(dir_angles[self.facing])
+                # if (use_file and ps_values[PS_R] < PS_MIN) or (not use_file and ps_values[PS_L] < PS_MIN):
+                #     # self.intersection_align()
+                #     self.intersection_align()  # twice
+                #     self.intersection_align()  # twice
+                #
+                #     if (use_file and ps_values[PS_L] < PS_MIN) or (not use_file and ps_values[PS_R] < PS_MIN):
+                #         self.intersection_align()  # twice
 
-                    self.enter_passage()
+                if use_file:
 
-                else:
-                    if ps_front_left < PS_FRONT_STOP and ps_front_right < PS_FRONT_STOP:
-                        print('Going forward')
-                        self.blink_forward(LED_BLINK_TIME)
-                    else:
-                        if ps_values[PS_L] < PS_MIN:
-                            print('Turning left')
-                            self.blink_left(LED_BLINK_TIME)
-                            self.facing = Direction((self.facing.value - 1) % 4)
-                            self.turn_towards_blocking(dir_angles[self.facing])
+                    if run == 3:
+                        next_dir = next(self.best_path)
 
+                        if next_dir == self.facing:
+                            print('Proceeding {}'.format(next_dir.name.title()))
                             self.enter_passage()
                         else:
-                            print('Turning around')
-                            self.blink_reverse(LED_BLINK_TIME)
-                            self.turn_around()
+                            print('Turning {}'.format(next_dir.name.title()))
+                            self.facing = next_dir
+                            self.turn_towards_blocking(dir_angles[self.facing])
+                            self.enter_passage()
+                    else:
+                        # Give priority to left
+                        if ps_values[PS_L] < PS_MIN:
+                            self.turn_left()
+
+                        else:
+                            if ps_front_left < PS_FRONT_STOP and ps_front_right < PS_FRONT_STOP:
+                                print('Going forward')
+                                self.blink_forward(LED_BLINK_TIME)
+                                self.enter_passage()
+                            else:
+                                if ps_values[PS_R] < PS_MIN:
+                                    self.turn_right()
+                                else:
+                                    self.turn_around()
+                        if run == 2:
+                            self.path_logger.add(self.facing)
+
+                else:
+                    # Give priority to right
+                    if ps_values[PS_R] < PS_MIN:
+                        self.turn_right()
+
+                    else:
+                        # print('Not turning right because: {}'.format(ps_values[PS_R]))
+                        # self.ps_refresh()
+                        # print('After refreshing its {}'.format(ps_values[PS_R]))
+                        if ps_front_left < PS_FRONT_STOP and ps_front_right < PS_FRONT_STOP:
+                            print('Going forward')
+                            self.blink_forward(LED_BLINK_TIME)
+                            self.enter_passage()
+                        else:
+                            if ps_values[PS_L] < PS_MIN:
+                                self.turn_left()
+                            else:
+                                self.turn_around()
+                    if run == 2:
+                        self.path_logger.add(self.facing)
 
                 self.leds[LED_BODY].set(0)
                 self.full_forward()
@@ -419,7 +548,6 @@ class SuperRoomba:
                 self.write_motors()
 
                 if self.touch_sensor.getValue():
-                    print('Finished.')
                     self.leds[self.search_led].set(0)
                     self.state = State.FINISH
 
@@ -433,19 +561,48 @@ class SuperRoomba:
                     self.state = State.DECIDE
                     continue
 
-                if ps_values[PS_R] < PS_MIN:
-                    print('Encountered right opening')
+                if use_file:
+                    turn_found = ps_values[PS_L] < PS_MIN
+                else:
+                    turn_found = ps_values[PS_R] < PS_MIN
+
+                # either_turn_found = ps_values[PS_L] < PS_MIN or ps_values[PS_R] < PS_MIN
+                # both_turns_found = ps_values[PS_L] < PS_MIN and ps_values[PS_R] < PS_MIN
+
+                # if use_file:
+                #     soft_intersection = ps_values[PS_R] < PS_MIN
+                # else:
+                #     soft_intersection = ps_values[PS_L] < PS_MIN
+
+                if turn_found:
+                    print('Encountered turn')
                     self.leds[LED_BODY].set(1)
+
                     self.intersection_align()
                     self.leds[self.search_led].set(0)
                     self.state = State.DECIDE
 
+                # if soft_intersection:
+                #     self.path_logger.add(self.facing)
+
             elif self.state == State.FINISH:
+                print('Finished.')
+                print('Path log: {}'.format(self.path_logger.chars()))
                 self.stop_motors()
+                break
+
+    def cleanup(self):
+        with open('data.json', 'w') as f:
+            data = {
+                'run': run + 1,
+                'best_path': self.path_logger.chars()
+            }
+            json.dump(data, f)
 
     def run(self):
         self.setup()
         self.mainloop()
+        self.cleanup()
 
 
 super_roomba = SuperRoomba()
