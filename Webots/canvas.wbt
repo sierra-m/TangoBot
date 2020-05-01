@@ -1,9 +1,12 @@
 #VRML_SIM R2020a utf8
 WorldInfo {
+  info [
+    ""
+  ]
 }
 Viewpoint {
-  orientation -0.5820041852000309 0.5725659420494057 0.5774420926939122 2.084207238261085
-  position -0.09907430493204518 4.227164661249874 -0.04516295630763547
+  orientation -0.5861283450951631 0.5615904907598496 0.5840117154339602 2.1046451167717546
+  position -0.14551264941214548 4.583348369005328 0.003233871383687692
 }
 TexturedBackground {
 }
@@ -15,19 +18,41 @@ RectangleArena {
 Solid {
   translation 0 0.01 0
   children [
-    Shape {
+    DEF GROUND Shape {
       appearance PBRAppearance {
         metalness 0
       }
-      geometry Plane {
-        size 1 3
+      geometry Box {
+        size 1 0.02 3
       }
     }
   ]
+  boundingObject USE GROUND
+  recognitionColors [
+    0 0 0
+  ]
 }
 Robot {
-  translation 0 0.04 -1.4
+  translation 0.12 0.06 -1.4
   children [
+    Pen {
+      translation 0 -0.02 0.02
+      rotation 0 1 0 1.57
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 1 0.666667 1
+            metalness 0
+          }
+          geometry Cylinder {
+            height 0.01
+            radius 0.004
+          }
+        }
+      ]
+      inkDensity 1
+      leadSize 0.005
+    }
     DistanceSensor {
       translation -0.02 0 0.1
       rotation 0 1 0 -1.8708
